@@ -37,9 +37,29 @@ class GradeController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        //
-    }
+{
+    // 1. Validamos los datos (asegúrate de que los nombres coincidan con el HTML)
+    $request->validate([
+        'subject_id'    => 'required',
+        'activity_type' => 'required|string|max:255',
+        'score'         => 'required|numeric',
+        'date'          => 'required|date',
+        'comments'      => 'nullable|string'
+    ]);
+
+    // 2. Creamos el registro
+    Grade::create([
+        'subject_id'    => $request->subject_id,
+        'activity_type' => $request->activity_type,
+        'score'         => $request->score,
+        'date'          => $request->date,
+        'comments'      => $request->comments,
+    ]);
+
+    // 3. Redireccionamos de vuelta con la materia seleccionada
+    return redirect()->route('grades.index', ['subject_id' => $request->subject_id])
+                     ->with('success', 'Calificación guardada');
+}
 
     /**
      * Display the specified resource.
